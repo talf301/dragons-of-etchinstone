@@ -451,3 +451,23 @@ button:hover:enabled {
     padding-inline: 8px;
   }
 }
+.north-print {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 6px 0;
+  border-radius: 4px;
+}
+.mage-options {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0;
+}
+.mage-options label,
+details label:has(input[type="file"]) {
+  display: grid;
+  gap: 4px;
+}
+input[type="file"] {
+  max-width: 100%;
+}
