@@ -1768,7 +1768,7 @@ export default {
       ],
     },
     "Yellow Dragon": {
-      name: "Yellow Dragon",
+      name: "Vuurhast",
       initiative: 13,
       earlyDamage: {
         value: 8,
@@ -1814,7 +1814,7 @@ export default {
       ],
     },
     "Blue Dragon": {
-      name: "Blue Dragon",
+      name: "Grimroch",
       initiative: 10,
       earlyDamage: {
         value: 4,
@@ -1864,7 +1864,7 @@ export default {
       ],
     },
     "Gray Dragon": {
-      name: "Gray Dragon",
+      name: "Helsang",
       initiative: 12,
       earlyDamage: {
         value: 6,

@@ -179,3 +179,16 @@ test("Poison carries to the new hand only if another encounter fits", () => {
     }
   }
 });
+
+test("Slow permits an enhanced Move through matching attack armor", () => {
+  const g = newGame("Red Dragon");
+  g.region = 2;
+  g.deck = [10];
+  g.hand = [4, 5, 2, 0];
+  g.roles = [4, 5, 2];
+  assert.equal(encounter(g).ability, "slow");
+  const boost = face(g, 2).boost;
+  assert.equal(preview(g).power, face(g, 4).enhanced.value + boost);
+  g.roles = [0, 5, 2];
+  assert.equal(preview(g).power, face(g, 0).enhanced.value + boost - 3);
+});

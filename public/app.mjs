@@ -52,9 +52,9 @@ function modal(html) {
 }
 const names = {
   "Red Dragon": "Rodving",
-  "Blue Dragon": "Water dragon",
-  "Gray Dragon": "Shadow dragon",
-  "Yellow Dragon": "Lightning dragon",
+  "Blue Dragon": "Grimroch",
+  "Gray Dragon": "Helsang",
+  "Yellow Dragon": "Vuurhast",
 };
 function setup() {
   const choices = Object.entries(dragons)

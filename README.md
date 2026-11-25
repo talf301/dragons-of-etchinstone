@@ -11,9 +11,11 @@ Serve the public directory over HTTPS. For local development, run `python3 -m ht
 The base campaign offers all six starting difficulties, Cavalier and Glass Cannon, four region passes, 16 mage cards with four levels each, and a two-part dragon battle. The player controls assignments, boost allocation, diversion, fusion, damage, upgrades and regrouping. Optional multiplayer and expansion rules are outside this implementation.
 
 - [Chip Theory Games rulebooks](https://chiptheorygames.com/pages/support/dragons-of-etchinstone)
-- [Card statistics reference](https://github.com/Pelody/Dragons_of_Etchinstone/blob/main/index.html)
+- [Card statistics reference](https://github.com/Pelody/Dragons_of_Etchinstone/blob/HEAD/index.html)
 - [Publisher-maintained digital rules](https://rules.dized.com/en/game/CskMrsIiT4S_UgD5seCOUQ/dragons-of-etchinstone)
 
-- [Printed card reference used to reconcile numerical differences](https://github.com/beamer159/etchinstone/tree/main/images)
+- [Printed card reference used to reconcile numerical differences](https://github.com/beamer159/etchinstone/tree/HEAD/images)
 
 Run the engine checks with `node --test tests/*.mjs`.
+
+Publish changes from this repository with `git subtree push --prefix public origin gh-pages` after the tests pass.
