@@ -416,9 +416,20 @@ button:hover:enabled {
 .enc {
   display: flow-root;
 }
-#details:has(#print-face) label {
-  display: block;
-  margin: 10px 0;
+.card-pair {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.card-pair > .card {
+  flex: 1;
+  border-radius: 7px 7px 0 0;
+}
+.enlarge {
+  width: 100%;
+  border-top: 0;
+  border-radius: 0 0 7px 7px;
+  font-size: 14px;
 }
 #print-face {
   margin-top: 14px;
