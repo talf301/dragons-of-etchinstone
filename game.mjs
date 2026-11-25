@@ -145,7 +145,10 @@ export function preview(g) {
     const matches =
       a.type.includes(action) ||
       (e.ability === "slow" && a.type.includes("move"));
-    if (enhanced && matches) enhancedElements.add(el);
+    // Slow enemies accept a Move directly. Their armor only resists Attacks.
+    const usesMove =
+      a.type.includes("move") && (journey || e.ability === "slow");
+    if (enhanced && matches && (journey || !usesMove)) enhancedElements.add(el);
     const speed = face(g, element)?.initiative ?? 0;
     let bonus = face(g, boost)?.boost ?? 0;
     if (e.hard === "night_travel") bonus = Math.max(0, bonus - speed);
