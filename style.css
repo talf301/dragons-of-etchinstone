@@ -1,0 +1,387 @@
+:root {
+  color-scheme: dark;
+  --ink: #f1ebd8;
+  --muted: #b6c6b5;
+  --gold: #e7c27d;
+  --bg: #0d201b;
+  --edge: #40564a;
+  --panel: #193229;
+  font:
+    16px/1.42 "Avenir Next",
+    Avenir,
+    -apple-system,
+    sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  padding: env(safe-area-inset-top) max(14px, env(safe-area-inset-right))
+    max(24px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
+  min-height: 100vh;
+  background: radial-gradient(ellipse at 50% 0, #213b31, transparent 66%);
+}
+header,
+main {
+  max-width: 740px;
+  margin: auto;
+}
+header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 62px;
+  border-bottom: 1px solid var(--edge);
+}
+header strong {
+  font:
+    600 24px Georgia,
+    serif;
+  letter-spacing: -1px;
+  flex: 1;
+}
+.mark {
+  color: var(--gold);
+  font: 40px Georgia;
+}
+button,
+select {
+  font: inherit;
+  color: inherit;
+  background: #203b32;
+  border: 1px solid var(--edge);
+  border-radius: 7px;
+  padding: 8px 12px;
+  min-height: 44px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+button:disabled {
+  opacity: 0.44;
+  cursor: default;
+}
+button:focus-visible,
+select:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+button[aria-pressed="true"],
+.selected {
+  border-color: var(--gold);
+  box-shadow: inset 0 0 0 1px var(--gold);
+}
+header button {
+  background: transparent;
+  border: 0;
+}
+#help {
+  font-family: Georgia;
+  border: 1px solid var(--edge);
+  width: 44px;
+  border-radius: 50%;
+}
+main {
+  padding-top: 16px;
+}
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+h1,
+h2,
+h3,
+.cname {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 500;
+  line-height: 1.1;
+}
+h1 {
+  font-size: clamp(36px, 8vw, 65px);
+  letter-spacing: -0.05em;
+}
+h2 {
+  font-size: 27px;
+  letter-spacing: -0.04em;
+}
+h3 {
+  font-size: 21px;
+}
+p {
+  color: var(--muted);
+  margin: 8px 0 12px;
+}
+.over,
+small,
+.stat {
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.over {
+  color: var(--gold);
+  margin-bottom: 7px;
+}
+.cover,
+.banner {
+  background: #234037 url("./vale.webp") center 45% / cover;
+  border: 1px solid #59705c;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+}
+.cover {
+  display: flex;
+  align-items: flex-end;
+  min-height: clamp(235px, 36vh, 375px);
+}
+.cover > div,
+.banner > div {
+  width: 100%;
+  padding: 24px 18px;
+  background: linear-gradient(transparent, rgba(6, 21, 16, 0.94) 70%);
+}
+.cover h1 {
+  max-width: 9em;
+  text-shadow: 0 2px 15px #15251a;
+}
+.banner > div {
+  padding: 42px 16px 12px;
+}
+.banner h1 {
+  font-size: 32px;
+}
+.section {
+  margin: 21px 0;
+}
+.line,
+.actions,
+.stats {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.line {
+  justify-content: space-between;
+}
+.line small,
+.muted {
+  color: var(--muted);
+}
+.dragons,
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 12px 0;
+}
+.dragon,
+.card {
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+}
+.dragon {
+  padding: 12px 10px;
+  border-top: 2px solid var(--el);
+}
+.glyph {
+  color: var(--el);
+  font-size: 17px;
+}
+.fire {
+  --el: #efa780;
+}
+.water {
+  --el: #89c8de;
+}
+.lightning {
+  --el: #ebcf77;
+}
+.shadow {
+  --el: #cca5d8;
+}
+.primary {
+  width: 100%;
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #20281a;
+  font-weight: 750;
+}
+.primary,
+.wide {
+  margin-top: 10px;
+}
+.wide {
+  width: 100%;
+}
+.enc,
+.box {
+  padding: 14px;
+  background: #172e26;
+  border: 1px solid var(--edge);
+  border-radius: 10px;
+  margin-top: 12px;
+}
+.stats {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 8px 0 0;
+}
+.stat {
+  padding: 4px 8px;
+  background: #2a4135;
+  color: #e5e9d8;
+  border-radius: 4px;
+  letter-spacing: 0.03em;
+}
+.slots {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin: 8px 0;
+}
+.slot {
+  background: #14271e;
+  text-align: left;
+  min-height: 57px;
+  padding: 6px;
+}
+.slot small {
+  display: block;
+  color: var(--gold);
+  font-size: 10px;
+}
+.slot span {
+  font: 15px Georgia;
+}
+.card {
+  padding: 10px;
+  border-color: #536251;
+  border-left: 3px solid var(--el);
+  background: linear-gradient(130deg, #2a4034, #192c25);
+}
+.card .line {
+  font-size: 11px;
+  color: var(--el);
+  font-weight: 700;
+}
+.cname {
+  display: block;
+  font-size: 20px;
+  margin: 5px 0 8px;
+}
+.card .numbers {
+  display: block;
+  font-size: 12px;
+  color: #e2e6d6;
+  line-height: 1.55;
+}
+.foot,
+.hint {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 7px 0;
+}
+.result {
+  font-size: 17px;
+  color: var(--gold);
+}
+.tag {
+  font-size: 12px;
+  color: var(--gold);
+}
+select {
+  max-width: 100%;
+}
+dialog {
+  width: min(95vw, 510px);
+  max-height: 82dvh;
+  color: var(--ink);
+  background: #162e25;
+  border: 1px solid #6b806c;
+  border-radius: 12px;
+  padding: 20px;
+}
+dialog::backdrop {
+  background: #040d09b8;
+}
+.close {
+  float: right;
+}
+dialog h2 {
+  padding-right: 60px;
+  margin: 8px 0 18px;
+}
+dialog h3 {
+  margin-top: 18px;
+}
+dialog li {
+  margin-bottom: 8px;
+}
+.journal {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--edge);
+}
+#status {
+  position: fixed;
+  bottom: 0;
+  color: var(--gold);
+  background: var(--bg);
+}
+.actions {
+  margin-top: 10px;
+}
+details {
+  margin: 12px 0;
+  color: var(--muted);
+}
+summary {
+  cursor: pointer;
+  min-height: 44px;
+  padding: 10px 0;
+}
+.check {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+}
+.check input {
+  width: 19px;
+  height: 19px;
+}
+footer {
+  color: var(--muted);
+  text-align: center;
+  font-size: 12px;
+  margin: 24px 0;
+}
+button:hover:enabled {
+  filter: brightness(1.1);
+}
+@media (min-width: 650px) {
+  .cards {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .dragons {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+@media (max-width: 370px) {
+  body {
+    padding-inline: 9px;
+  }
+  .card {
+    padding: 7px;
+  }
+  .cname {
+    font-size: 17px;
+  }
+}
