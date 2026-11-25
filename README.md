@@ -20,4 +20,4 @@ Run the engine checks with `node --test tests/*.mjs`.
 
 Publish changes from this repository with `git subtree push --prefix public origin gh-pages` after the tests pass.
 
-The Cards button shows all 16 original print-and-play mage cards at each level. The game fetches the three [pinned print sheets](https://github.com/beamer159/etchinstone/tree/fb0d656638712b1a8f4dd11863ee73f4dfc1265e/images) on first online use and caches them on the device for offline play. The game uses the Chip Theory rules and terminology.
+Tap Enlarge on a mage card to see its original print-and-play face at its current level. The game fetches the three [pinned print sheets](https://github.com/beamer159/etchinstone/tree/fb0d656638712b1a8f4dd11863ee73f4dfc1265e/images) on first online use and caches them on the device for offline play. The game uses the Chip Theory rules and terminology.

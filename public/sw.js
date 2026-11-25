@@ -1,5 +1,5 @@
 const prefix = "etchinstone-shell-";
-const cacheName = prefix + "3";
+const cacheName = prefix + "4";
 const assets = [
   "./",
   "./index.html",

@@ -108,7 +108,7 @@ function card(id, action, disabled = false) {
       role[i % 3] +
       (game.region === 5 ? " " + (1 + Math.floor(i / 3)) : "") +
       (game.fuse?.top === id ? " · " + title(game.fuse.element) : "");
-  return btn(
+  const playButton = btn(
     action,
     `<span class="line"><span>${glyph[c.cardElement]} ${title(c.cardElement)}</span><span>Lv ${game.levels[id]}</span></span><span class="cname">${c.name}</span>
     ${mageArt(c, game.levels[id])}
@@ -118,6 +118,7 @@ function card(id, action, disabled = false) {
     "card " + c.cardElement,
     disabled,
   );
+  return `<div class="card-pair">${playButton}<button type="button" class="enlarge" data-action="enlarge" data-value="${id}" aria-label="Enlarge ${title(c.cardElement)} ${c.name}, level ${game.levels[id]}" aria-haspopup="dialog"><span aria-hidden="true">⛶</span> Enlarge</button></div>`;
 }
 const traits = {
   ambush: "Early damage is doubled.",
@@ -253,29 +254,23 @@ function fusion() {
     `<h2>Fuse cards</h2><p>Pair an assigned card with a spare card of the same element. Choose its new element. Both cards are spent.</p>${pairs.length ? `<label>Card pair <select id="pair">${pairs.map(([a, b]) => `<option value="${a},${b}">${mageCards[a].name} + ${mageCards[b].name}</option>`).join("")}</select></label><p><label>New element <select id="ether">${elements.map((e) => '<option value="' + e + '">' + title(e) + "</option>").join("")}</select></label></p>${btn("applyFuse", "Apply fusion", "", "primary")}` : "<p>Assign a role and leave a matching card unassigned to fuse them.</p>"}${game.fuse ? btn("unfuse", "Remove fusion", "", "wide") : ""}`,
   );
 }
-function cardGallery() {
-  const id = game?.hand?.[0] ?? 0;
-  modal(`<h2>Printed cards</h2><label>Mage card <select id="print-card">${mageCards.map((c, i) => '<option value="' + i + '" ' + (i === id ? "selected" : "") + ">" + title(c.cardElement) + " · " + c.name + "</option>").join("")}</select></label>
-  <label>Level <select id="print-level">${[1, 2, 3, 4].map((n) => "<option " + (n === (game?.levels?.[id] || 2) ? "selected" : "") + ">" + n + "</option>").join("")}</select></label><div id="print-face"></div>
-  <p class="hint">Original print-and-play edition. Frostfire Wall appears as Ice Wall in this printing.</p>`);
-  const draw = () => {
-    const c = mageCards[Number(document.querySelector("#print-card").value)];
-    const level = Number(document.querySelector("#print-level").value);
-    document.querySelector("#print-face").innerHTML =
-      mageArt(c, level) + '<p class="art-wait">Loading printed card…</p>';
-  };
-  draw();
-  for (const id of ["print-card", "print-level"])
-    document.getElementById(id).onchange = draw;
+function enlargeCard(id) {
+  const c = mageCards[id],
+    level = game.levels[id];
+  document.querySelector("#card-title").textContent = c.name;
+  document.querySelector("#card-level").textContent =
+    title(c.cardElement) + " · Level " + level;
+  document.querySelector("#print-face").innerHTML =
+    mageArt(c, level) + '<p class="art-wait">Loading printed card…</p>';
+  document.querySelector("#card-view").showModal();
   loadArt();
 }
 document.addEventListener("card-art-ready", () => {
   const hint = document.querySelector(".art-wait");
   if (hint && !document.documentElement.classList.contains("has-powers"))
     hint.textContent =
-      "Card image unavailable. Reopen Cards while online to try again.";
+      "Card image unavailable. Tap Enlarge while online to try again.";
 });
-document.querySelector("#printed").onclick = cardGallery;
 window.addEventListener("online", loadArt);
 loadArt();
 document.querySelector("#help").onclick = help;
@@ -288,6 +283,10 @@ document.addEventListener("click", (event) => {
     id = Number(v),
     oldPhase = game?.phase,
     oldTurn = game?.turn;
+  if (a === "enlarge") {
+    enlargeCard(id);
+    return;
+  }
   if (a === "dragon") dragon = v;
   if (a === "start") {
     game = newGame(dragon, options.difficulty, options.cavalier, options.glass);
