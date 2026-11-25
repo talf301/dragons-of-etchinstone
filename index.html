@@ -36,6 +36,25 @@
       </form>
       <h2 id="card-title"></h2>
       <p id="card-level"></p>
+      <div
+        id="level-buttons"
+        role="group"
+        aria-label="Preview card level"
+        hidden
+      >
+        <button type="button" data-action="view-level" value="1">
+          Level 1
+        </button>
+        <button type="button" data-action="view-level" value="2">
+          Level 2
+        </button>
+        <button type="button" data-action="view-level" value="3">
+          Level 3
+        </button>
+        <button type="button" data-action="view-level" value="4">
+          Level 4
+        </button>
+      </div>
       <div id="print-face"></div>
     </dialog>
     <div aria-live="polite" id="status"></div>

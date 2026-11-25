@@ -3,6 +3,7 @@ import { openPrints, importPrints, printOf } from "./northvale-art.mjs";
 import { mageArt, encounterArt, loadArt } from "./card-art.mjs";
 import {
   cardOf,
+  bossOf,
   regionOf,
   shiftDirection,
   special,
@@ -94,7 +95,7 @@ function setup() {
   <details ${options.northvale || options.mages.length ? "open" : ""}><summary>Ether mages · ${options.mages.join(", ") || "Base deck"}</summary>
   <p class="hint">Each mage replaces four cards. Choose several to travel as a party.</p>${mages.map((m) => `<label class="check"><input type="checkbox" data-mage="${m}" ${options.mages.includes(m) ? "checked" : ""}>${m}</label>`).join("")}
   <label>Personal Northvale card art <input id="north-prints" type="file" accept=".json,application/json"></label></details>
-  <h2>Choose your ${options.northvale ? "boss" : "dragon"}</h2><p>Cross four regions, strengthen your spells, and face your dragon with the deck you build.</p><div class="dragons">${choices}</div><div class="hint">${title(d.earlyDamage.element)} · Journey ${d.mpTiers.map((t) => t[0]).join(" / ")} MP · Battle ${d.hpTiers.map((t) => t[0]).join(" / ")} HP</div>
+  <h2>Choose your ${options.northvale ? "boss" : "dragon"}</h2><p>Cross four regions, strengthen your spells, and face your dragon with the deck you build.</p><div class="dragons">${choices}</div><div class="hint inspect-surface">${inspectButton("boss", names[dragon] + " boss card")}${title(d.earlyDamage.element)} · Journey ${d.mpTiers.map((t) => t[0]).join(" / ")} MP · Battle ${d.hpTiers.map((t) => t[0]).join(" / ")} HP</div>
   <details><summary>Difficulty · ${options.difficulty}</summary><label>Starting level adjustments <select id="difficulty">${Object.keys(
     difficulties,
   )
@@ -170,12 +171,11 @@ function talentValue(id, level) {
       return "";
   }
 }
-function faceText(f, id) {
+function faceText(f, id, level = game.levels[id]) {
   const e = f.enhanced,
     types = e.colors?.join(" / ") || e.element;
   let val = e.value;
-  if (special(game, id) && id === 5)
-    val += "/" + [-2, 1, 3, 4][game.levels[id] - 1];
+  if (special(game, id) && id === 5) val += "/" + [-2, 1, 3, 4][level - 1];
   return `${title(types)} · ${title(e.type)} <b>${val}</b>`;
 }
 function card(id, action, disabled = false) {
@@ -243,10 +243,25 @@ const traits = {
   steep: "Add the reserve boost to the journey target.",
   treacherous: "A narrow victory or loss also deals one damage.",
 };
+function inspectButton(kind, label) {
+  return `<button type="button" class="inspect-trigger" data-action="inspect-${kind}" aria-haspopup="dialog" aria-label="Enlarge ${label}"><span aria-hidden="true">⛶</span></button>`;
+}
 function info() {
   const e = encounter(game),
-    final = game.region === 5;
-  const journey = !!e.mp || game.stage === "approach";
+    final = game.region === 5,
+    journey = !!e.mp || game.stage === "approach";
+  const caption = final
+    ? names[game.dragon]
+    : "Key · " + cardOf(game, game.deck[0]).name;
+  return encounterPanel(
+    e,
+    final,
+    journey,
+    caption,
+    inspectButton(final ? "boss" : "map", final ? "boss card" : "map card"),
+  );
+}
+function encounterPanel(e, final, journey, caption = "", trigger = "") {
   const label = final
     ? journey
       ? "Final journey"
@@ -278,10 +293,10 @@ function info() {
     );
   if (!journey) facts.push("Armor · " + armor);
   if (final && journey) facts.push(title(e.mpTiers[0][1]) + " move");
-  return `<div class="enc">${final || game.northvale ? "" : encounterArt(game.region, e.number, journey)}<div class="line"><h2>${label}</h2><small>${final ? names[game.dragon] : "Key · " + cardOf(game, game.deck[0]).name}</small></div><div class="stats">${facts.map((s) => '<span class="stat">' + s + "</span>").join("")}</div>${[
+  return `<div class="enc ${trigger ? "inspect-surface" : ""}">${trigger}${final || game.northvale ? "" : encounterArt(game.region, e.number, journey)}<div class="line"><h2>${label}</h2><small>${caption}</small></div><div class="stats">${facts.map((s) => '<span class="stat">' + s + "</span>").join("")}</div>${[
     e.hard,
     e.peril,
-    ...(e.abilities || [e.ability]),
+    ...(final && journey ? [] : e.abilities || [e.ability]),
   ]
     .filter((t) => traits[t])
     .map(
@@ -297,7 +312,7 @@ function info() {
     .join("")}</div>`;
 }
 function banner() {
-  return `<div class="banner"><div><div class="over">${game.region < 5 ? "Region " + game.region + " of 4" : "Final battle"} · Turn ${game.turn}</div><h1>${game.region < 5 ? regionOf(game).name : names[game.dragon]}</h1></div></div>`;
+  return `<div class="banner inspect-surface">${inspectButton(game.region < 5 ? "map" : "boss", game.region < 5 ? "region map" : "boss card")}<div><div class="over">${game.region < 5 ? "Region " + game.region + " of 4" : "Final battle"} · Turn ${game.turn}</div><h1>${game.region < 5 ? regionOf(game).name : names[game.dragon]}</h1></div></div>`;
 }
 function setBox(i, journey) {
   const buttons = game.roles
@@ -447,25 +462,76 @@ function fusion() {
     `<h2>Fuse cards</h2><p>Pair an assigned card with a spare card of the same element. Choose its new element. Both cards are spent.</p>${pairs.length ? `<label>Card pair <select id="pair">${pairs.map(([a, b]) => `<option value="${a},${b}">${cardOf(game, a).name} + ${cardOf(game, b).name}</option>`).join("")}</select></label><p><label>New element <select id="ether">${elements.map((e) => '<option value="' + e + '">' + title(e) + "</option>").join("")}</select></label></p>${btn("applyFuse", "Apply fusion", "", "primary")}` : "<p>Assign a role and leave a matching card unassigned to fuse them.</p>"}${game.fuse ? btn("unfuse", "Remove fusion", "", "wide") : ""}`,
   );
 }
-function enlargeCard(id) {
-  const c = cardOf(game, id),
-    level = game.levels[id];
-  document.querySelector("#card-title").textContent = c.name;
-  document.querySelector("#card-level").textContent =
-    title(c.cardElement) + " · Level " + level;
-  document.querySelector("#print-face").innerHTML = c.mage
-    ? printCard(id, c, level) +
-      `<div class="box"><b>${c.mage} · ${title(face(game, id).background.join(" / "))}</b><p>${title(face(game, id).basic.type)} ${face(game, id).basic.value}<br>${faceText(face(game, id), id)}</p><p>Initiative ${face(game, id).initiative} · Boost ${face(game, id).boost} · Armor ${face(game, id).armorValue} ${face(game, id).armorElement || ""}</p><p>${talents[id]} ${talentValue(id, level)}</p><small>${face(game, id).encounterIcon} ${face(game, id).encounterValue} · Upgrade ${level === 4 ? "max" : face(game, id).upgradeCost + " XP"}</small></div>`
-    : mageArt(c, level) + '<p class="art-wait">Loading printed card…</p>';
-  document.querySelector("#card-view").showModal();
-  loadArt();
+const viewer = document.querySelector("#card-view");
+const levelButtons = document.querySelector("#level-buttons");
+function showViewer(name, subtitle, html) {
+  viewer.querySelector("#card-title").textContent = name;
+  viewer.querySelector("#card-level").textContent = subtitle;
+  viewer.querySelector("#print-face").innerHTML = html;
+  if (!viewer.open) viewer.showModal();
 }
-document.addEventListener("card-art-ready", () => {
-  const hint = document.querySelector(".art-wait");
-  if (hint && !document.documentElement.classList.contains("has-powers"))
-    hint.textContent =
-      "Card image unavailable. Tap Enlarge while online to try again.";
-});
+function enlargeCard(id, level = game.levels[id]) {
+  const c = cardOf(game, id),
+    f = c.levels[level];
+  for (const button of levelButtons.querySelectorAll("button")) {
+    button.dataset.card = id;
+    button.setAttribute("aria-pressed", Number(button.value) === level);
+  }
+  levelButtons.hidden = false;
+  const stats = `<div class="box"><b>${title(f.background?.join(" / ") || c.cardElement)}</b><p>${title(f.basic.type)} ${f.basic.value}<br>${faceText(f, id, level)}</p><p>Initiative ${f.initiative} · Boost ${f.boost} · Armor ${f.armorValue} ${f.armorElement || ""}</p>${c.mage ? `<p>${talents[id]} ${talentValue(id, level)}</p>` : ""}<small>${title(f.encounterIcon)} ${f.encounterValue}${f.hardship && f.hardship !== "none" ? " · " + title(f.hardship) : ""} · ${level === 4 ? "Max level" : "Upgrade " + f.upgradeCost + " XP"}</small></div>`;
+  showViewer(
+    c.name,
+    `Current level ${game.levels[id]} · Viewing level ${level}`,
+    printCard(id, c, level) + stats,
+  );
+  if (!c.mage) loadArt();
+}
+function inspectBoard(kind) {
+  levelButtons.hidden = true;
+  if (kind === "boss") {
+    const boss = game ? bossOf(game) : northBosses[dragon] || dragons[dragon];
+    showViewer(
+      boss.name,
+      "Boss card",
+      encounterPanel(boss, true, true) + encounterPanel(boss, true, false),
+    );
+  } else {
+    const region = regionOf(game),
+      active = game.phase === "play" ? encounter(game) : null;
+    const section = (entry, index, journey) => {
+      const current =
+        active && active.number === index + 1 && !!active.mp === journey;
+      return encounterPanel(
+        { ...entry, number: index + 1, hard: current ? active.hard : null },
+        false,
+        journey,
+        current ? "Current encounter" : "",
+      );
+    };
+    showViewer(
+      region.name,
+      `Region ${game.region} · Map card`,
+      btn("inspect-boss", "View " + names[game.dragon] + " boss card") +
+        region.enemies
+          .flatMap((enemy, i) => [
+            { entry: enemy, i, journey: false },
+            { entry: region.journeys[i], i, journey: true },
+          ])
+          .sort((a, b) => {
+            const current = (row) =>
+              Number(
+                !!active &&
+                  active.number === row.i + 1 &&
+                  !!active.mp === row.journey,
+              );
+            return current(b) - current(a);
+          })
+          .map((row) => section(row.entry, row.i, row.journey))
+          .join(""),
+    );
+  }
+  viewer.scrollTop = 0;
+}
 window.addEventListener("online", loadArt);
 loadArt();
 document.querySelector("#help").onclick = help;
@@ -480,6 +546,14 @@ document.addEventListener("click", (event) => {
     oldTurn = game?.turn;
   if (a === "enlarge") {
     enlargeCard(id);
+    return;
+  }
+  if (a === "view-level") {
+    enlargeCard(Number(b.dataset.card), Number(b.value));
+    return;
+  }
+  if (a === "inspect-map" || a === "inspect-boss") {
+    inspectBoard(a === "inspect-map" ? "map" : "boss");
     return;
   }
   if (a === "dragon") dragon = v;
