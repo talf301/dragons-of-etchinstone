@@ -471,3 +471,54 @@ details label:has(input[type="file"]) {
 input[type="file"] {
   max-width: 100%;
 }
+#level-buttons:not([hidden]) {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+}
+#level-buttons button {
+  padding-inline: 2px;
+  min-height: 44px;
+}
+.inspect-surface {
+  position: relative;
+  padding-right: 44px;
+}
+.inspect-surface.banner {
+  padding-right: 0;
+}
+.inspect-surface.banner h1 {
+  padding-right: 32px;
+}
+.inspect-trigger {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  border: 0;
+  background: transparent;
+  border-radius: inherit;
+  text-align: right;
+}
+.inspect-trigger span {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  color: var(--gold);
+  font-size: 20px;
+}
+.hint.inspect-surface {
+  min-height: 44px;
+}
+#card-view .enc .printed {
+  width: min(32%, 120px);
+}
+#card-view .stats {
+  font-size: 16px;
+}
+#card-view > form {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
