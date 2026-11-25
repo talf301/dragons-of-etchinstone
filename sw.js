@@ -1,11 +1,12 @@
 const prefix = "etchinstone-shell-";
-const cacheName = prefix + "2";
+const cacheName = prefix + "3";
 const assets = [
   "./",
   "./index.html",
   "./app.mjs",
   "./game.mjs",
   "./cards.mjs",
+  "./card-art.mjs",
   "./style.css",
   "./manifest.webmanifest",
   "./vale.webp",

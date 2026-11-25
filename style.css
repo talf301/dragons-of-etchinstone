@@ -385,3 +385,58 @@ button:hover:enabled {
     font-size: 17px;
   }
 }
+.printed {
+  display: none;
+  background-repeat: no-repeat;
+  border-radius: 4px;
+}
+.has-powers .powers {
+  display: block;
+  background-image: var(--powers-image);
+  background-size: 800% 800%;
+  aspect-ratio: 825/568;
+  margin: 6px 0;
+}
+.has-enemies .enemies,
+.has-journeys .journeys {
+  display: block;
+  background-size: 400% 400%;
+  float: left;
+  width: 72px;
+  margin: 0 12px 5px 0;
+}
+.enemies {
+  background-image: var(--enemies-image);
+  aspect-ratio: 148/192;
+}
+.journeys {
+  background-image: var(--journeys-image);
+  aspect-ratio: 148/170;
+}
+.enc {
+  display: flow-root;
+}
+#details:has(#print-face) label {
+  display: block;
+  margin: 10px 0;
+}
+#print-face {
+  margin-top: 14px;
+}
+.has-powers .art-wait {
+  display: none;
+}
+@media (max-width: 440px) {
+  header {
+    gap: 4px;
+  }
+  header .mark {
+    display: none;
+  }
+  header strong {
+    font-size: 21px;
+  }
+  header button {
+    padding-inline: 8px;
+  }
+}

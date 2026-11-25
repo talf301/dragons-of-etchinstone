@@ -1,3 +1,4 @@
+import { mageArt, encounterArt, loadArt } from "./card-art.mjs";
 import {
   mageCards,
   regions,
@@ -110,6 +111,7 @@ function card(id, action, disabled = false) {
   return btn(
     action,
     `<span class="line"><span>${glyph[c.cardElement]} ${title(c.cardElement)}</span><span>Lv ${game.levels[id]}</span></span><span class="cname">${c.name}</span>
+    ${mageArt(c, game.levels[id])}
     <span class="numbers">${desc(f.basic)} <b>${f.basic.value}</b><br>${title(f.enhanced.element)} · ${desc(f.enhanced)} <b>${f.enhanced.value}</b><br>Initiative ${f.initiative} · Boost ${f.boost}<br>Armor ${f.armorValue}${f.armorElement ? " · " + title(f.armorElement) : ""}</span>
     <span class="tag">${tag}</span>`,
     id,
@@ -166,7 +168,7 @@ function info() {
     );
   if (!journey) facts.push("Armor · " + armor);
   if (final && journey) facts.push(title(e.mpTiers[0][1]) + " move");
-  return `<div class="enc"><div class="line"><h2>${label}</h2><small>${final ? names[game.dragon] : "Key · " + mageCards[game.deck[0]].name}</small></div><div class="stats">${facts.map((s) => '<span class="stat">' + s + "</span>").join("")}</div>${[
+  return `<div class="enc">${final ? "" : encounterArt(game.region, e.number, journey)}<div class="line"><h2>${label}</h2><small>${final ? names[game.dragon] : "Key · " + mageCards[game.deck[0]].name}</small></div><div class="stats">${facts.map((s) => '<span class="stat">' + s + "</span>").join("")}</div>${[
     e.hard,
     e.peril,
     e.ability,
@@ -251,6 +253,31 @@ function fusion() {
     `<h2>Fuse cards</h2><p>Pair an assigned card with a spare card of the same element. Choose its new element. Both cards are spent.</p>${pairs.length ? `<label>Card pair <select id="pair">${pairs.map(([a, b]) => `<option value="${a},${b}">${mageCards[a].name} + ${mageCards[b].name}</option>`).join("")}</select></label><p><label>New element <select id="ether">${elements.map((e) => '<option value="' + e + '">' + title(e) + "</option>").join("")}</select></label></p>${btn("applyFuse", "Apply fusion", "", "primary")}` : "<p>Assign a role and leave a matching card unassigned to fuse them.</p>"}${game.fuse ? btn("unfuse", "Remove fusion", "", "wide") : ""}`,
   );
 }
+function cardGallery() {
+  const id = game?.hand?.[0] ?? 0;
+  modal(`<h2>Printed cards</h2><label>Mage card <select id="print-card">${mageCards.map((c, i) => '<option value="' + i + '" ' + (i === id ? "selected" : "") + ">" + title(c.cardElement) + " · " + c.name + "</option>").join("")}</select></label>
+  <label>Level <select id="print-level">${[1, 2, 3, 4].map((n) => "<option " + (n === (game?.levels?.[id] || 2) ? "selected" : "") + ">" + n + "</option>").join("")}</select></label><div id="print-face"></div>
+  <p class="hint">Original print-and-play edition. Frostfire Wall appears as Ice Wall in this printing.</p>`);
+  const draw = () => {
+    const c = mageCards[Number(document.querySelector("#print-card").value)];
+    const level = Number(document.querySelector("#print-level").value);
+    document.querySelector("#print-face").innerHTML =
+      mageArt(c, level) + '<p class="art-wait">Loading printed card…</p>';
+  };
+  draw();
+  for (const id of ["print-card", "print-level"])
+    document.getElementById(id).onchange = draw;
+  loadArt();
+}
+document.addEventListener("card-art-ready", () => {
+  const hint = document.querySelector(".art-wait");
+  if (hint && !document.documentElement.classList.contains("has-powers"))
+    hint.textContent =
+      "Card image unavailable. Reopen Cards while online to try again.";
+});
+document.querySelector("#printed").onclick = cardGallery;
+window.addEventListener("online", loadArt);
+loadArt();
 document.querySelector("#help").onclick = help;
 document.querySelector("#journal").onclick = journal;
 document.addEventListener("click", (event) => {
